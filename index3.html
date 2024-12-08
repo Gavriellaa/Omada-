@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>On The Go!</title>
+
+   
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+    <!-- Font Awesome για εικονίδια -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Google Fonts για πιο κομψούς τίτλους -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Poppins:wght@600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9fb;
+        }
+
+        header {
+            background-color: #7e129c;  
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        header h1 {
+            font-size: 2.8em;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        header p {
+            font-size: 1.3em;
+            margin-top: 10px;
+            font-weight: 300;
+        }
+
+        .content {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .map-container {
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+
+        #map {
+            height: 500px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .action-buttons {
+            margin-top: 30px;
+        }
+
+        .action-buttons button {
+            background-color: #ff6f61; 
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-buttons button:hover {
+            background-color: #ff4e4b;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .company-info {
+            background-color: #fffcf8;
+            color: #333;
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .company-info h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.2em;
+            margin-bottom: 15px;
+        }
+
+        .company-info p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to On The Go!, a Package Delivery Optimizer </h1>
+        <p>Your trusted partner for fast and efficient package deliveries.</p>
+    </header>
+
+    <section class="content">
+        <!-- Πληροφορίες Εταιρείας -->
+        <div class="company-info">
+            <h2>About On The Go</h2>
+            <p>On The Go is a leading logistics solution company dedicated to providing fast, reliable, and eco-friendly delivery services. Our cutting-edge technology optimizes routes for efficiency, ensuring that every package reaches its destination in the fastest and safest way possible. Whether you're sending or receiving a package, we guarantee a seamless experience.</p>
+            <p>We take pride in our commitment to customer satisfaction, offering real-time tracking and the most reliable delivery service on the market.</p>
+        </div>
+
+        <div class="map-container">
+            <h2 style="font-family: 'Poppins', sans-serif; font-size: 2em; color: #ff6f61;">Track Our Delivery Vehicle</h2>
+            <div id="map"></div>
+        </div>
+
+        <div class="action-buttons">
+            <button onclick="sendPackage()"><i class="fas fa-truck"></i> Send a Package</button>
+            <button onclick="trackPackage()"><i class="fas fa-search"></i> Track My Package</button>
+            <button onclick="viewOrders()"><i class="fas fa-box"></i> View Orders</button>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 On The Go!. All Rights Reserved.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Δημιουργία χάρτη
+        const map = L.map('map').setView([37.9838, 23.7275], 13);
+
+        // Προσθήκη OpenStreetMap layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Σταθμοί παράδοσης με μεγαλύτερες αποστάσεις
+        const deliveryStops = [
+            { lat: 37.9838, lng: 23.7275 }, // Κέντρο Αθήνας
+            { lat: 37.9654, lng: 23.7357 }, // Παγκράτι
+            { lat: 37.9516, lng: 23.7482 }, // Χαλάνδρι
+            { lat: 37.9452, lng: 23.8059 }, // Μαρούσι
+            { lat: 37.9184, lng: 23.8231 }, // Κηφισιά
+            { lat: 37.9000, lng: 23.8000 }  // Ολυμπιακό Στάδιο
+        ];
+
+        // Σχεδίαση γραμμής (polyline) που ενώνει τους σταθμούς
+        const route = deliveryStops.map(stop => [stop.lat, stop.lng]);
+        const polyline = L.polyline(route, { color: '#ff6f61', weight: 4 }).addTo(map);
+
+        // Εικονίδιο οχήματος
+        const vehicleIcon = L.icon({
+            iconUrl: 'assets/shipped.png',  // Εικόνα όχηματος
+            iconSize: [50, 50],
+            iconAnchor: [25, 25]
+        });
+
+        // Εικονίδιο για τις στάσεις
+        const stopIcon = L.icon({
+            iconUrl: 'assets/box.png',  // Εικόνα στάσης
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+        });
+
+        // Προσθήκη εικονιδίων για τις στάσεις
+        deliveryStops.forEach(stop => {
+            L.marker([stop.lat, stop.lng], { icon: stopIcon }).addTo(map);
+        });
+
+        // Αρχικό σημείο του οχήματος
+        const vehicleMarker = L.marker([route[0][0], route[0][1]], { icon: vehicleIcon }).addTo(map);
+
+        // Υπολογισμός ταχύτητας ανάλογα με την απόσταση
+        function getSpeedBetweenPoints(start, end) {
+            const distance = map.distance(start, end);
+            return distance > 1500 ? 200 : 100;  // Αν η απόσταση είναι μεγαλύτερη, πιο αργή κίνηση
+        }
+
+        // Προσομοίωση κίνησης του οχήματος
+        let currentIndex = 0;
+
+        function moveVehicle() {
+            if (currentIndex < route.length - 1) {
+                const start = route[currentIndex];
+                const end = route[currentIndex + 1];
+
+                const speed = getSpeedBetweenPoints(start, end);
+
+                const deltaLat = (end[0] - start[0]) / 50;  // 50 βήματα
+                const deltaLng = (end[1] - start[1]) / 50;
+
+                let step = 0;
+                const interval = setInterval(() => {
+                    step++;
+                    const lat = start[0] + deltaLat * step;
+                    const lng = start[1] + deltaLng * step;
+
+                    vehicleMarker.setLatLng([lat, lng]);
+
+                    if (step >= 50) {
+                        clearInterval(interval);
+                        currentIndex++;
+                        moveVehicle();  // Μετάβαση στο επόμενο τμήμα
+                    }
+                }, speed);
+            }
+        }
+
+        moveVehicle(); // Ξεκινά η κίνηση
+
+        // Συναρτήσεις για τα κουμπιά
+       function sendPackage() {
+    window.location.href = 'send-package.html';
+}
+
+
+function trackPackage() {
+    window.location.href = 'track-package.html';
+}
+
+
+        function viewOrders() {
+            window.location.href = 'orders.html';
+        }
+    </script>
+</body>
+</html>

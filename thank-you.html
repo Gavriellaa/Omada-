@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Poppins:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            background-color: #f9f9fb;
+            position: relative;
+            min-height: 100vh;
+            padding-top: 70px;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('assets/pexels-elevate-1267325.jpg') no-repeat center center fixed;
+            background-size: cover;
+            filter: blur(8px) brightness(90%);
+            z-index: -1;
+        }
+
+        .navbar {
+            background-color: #7e129c;
+            color: white;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1em;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-links a:hover {
+            color: #ffeb3b;
+        }
+
+        .thank-you-container {
+            text-align: center;
+            background: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 50px auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .thank-you-container h1 {
+            font-family: 'Poppins', sans-serif;
+            color: #7e129c;
+            margin-bottom: 20px;
+        }
+
+        .thank-you-container p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .thank-you-container .order-code {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .thank-you-container button {
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .thank-you-container button:hover {
+            background-color: #ff4e4b;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index3.html" class="logo">On The Go</a>
+            <ul class="navbar-links">
+                <li><a href="index3.html">Home</a></li>
+                <li><a href="send-package.html">Send a Package</a></li>
+                <li><a href="track-package.html">Track My Package</a></li>
+                <li><a href="orders.html">My Orders</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="thank-you-container">
+        <h1>Thank You for Choosing On The Go!</h1>
+        <p>You can track your package using the following code:</p>
+        <p class="order-code">
+            Tracking Code: <span id="order-code"></span>
+        </p>
+        <button onclick="copyCode()">Copy Code</button>
+        <button onclick="goBack()">Go to Home</button>
+    </div>
+
+    <script>
+        // Λήψη του orderCode από το URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderCode = urlParams.get('orderCode');
+        document.getElementById('order-code').textContent = orderCode;
+
+        // Συνάρτηση αντιγραφής κωδικού
+        function copyCode() {
+            const code = document.getElementById('order-code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Tracking code copied to clipboard!');
+            }).catch(() => {
+                alert('Failed to copy the tracking code.');
+            });
+        }
+
+        // Συνάρτηση επιστροφής στην αρχική σελίδα
+        function goBack() {
+            window.location.href = 'index3.html';
+        }
+    </script>
+</body>
+</html>
