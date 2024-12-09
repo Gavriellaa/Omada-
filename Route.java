@@ -5,10 +5,12 @@ public class Route {
     private Vehicle vehicle;
     private List<Client> clients;
 
+
     public Route(Vehicle vehicle) {
         this.vehicle = vehicle;
         this.clients = new ArrayList<>();
     }
+
 
     public void addClient(Client client) {
         if (client != null) {
@@ -18,52 +20,61 @@ public class Route {
         }
     }
 
+
     public List<Client> getClients() {
         return new ArrayList<>(clients);
     }
+
 
     public Vehicle getVehicle() {
         return vehicle;
     }
 
-    public double calculateTotalCost(DistanceMatrix distanceMatrix) {
+
+    public double calculateTotalRoute(DistanceMatrix distanceMatrix) {
         if (clients.isEmpty()) {
-            System.err.println("No clients in route. Total cost is 0.");
+            System.err.println("No clients in route. Total route is 0km.");
             return 0;
         }
-        double totalCost = 0;
+        double totalRoute = 0;
         Client previousClient = null;
 
         for (Client client : clients) {
             if (previousClient == null) {
-                totalCost += distanceMatrix.getDistance(0, client.getId());
+                totalRoute += distanceMatrix.getDistance(0, client.getId());
             } else {
-                totalCost += distanceMatrix.getDistance(previousClient.getId(), client.getId());
+                totalRoute += distanceMatrix.getDistance(previousClient.getId(), client.getId());
             }
             previousClient = client;
         }
-
-        totalCost += distanceMatrix.getDistance(previousClient.getId(), 0);
-
-        return totalCost;
+        totalRoute += distanceMatrix.getDistance(previousClient.getId(), 0);
+        return totalRoute;
     }
+
 
     public double calculateTotalDemand() {
         return clients.stream().mapToDouble(Client::getDemand).sum();
     }
 
+
     public boolean exceedsCapacity() {
         return calculateTotalDemand() > vehicle.getCapacity();
     }
 
+
     public void display(DistanceMatrix distanceMatrix) {
         System.out.println("Route for Vehicle " + vehicle.getId() + ": ");
+        System.out.print("Depot -> ");
         for (Client client : clients) {
             System.out.print("Client " + client.getId() + " -> ");
         }
         System.out.println("Depot");
-        System.out.println("Total cost: " + calculateTotalCost(distanceMatrix));
+        System.out.println("Total route: " + calculateTotalRoute(distanceMatrix));
         System.out.println("Total demand: " + calculateTotalDemand());
-        System.out.println("Exceeds capacity: " + exceedsCapacity());
+        if (exceedsCapacity()) {
+            System.out.println("The demand exceeds the vehicles' capacity.");
+        } else {
+            System.out.println("The demand doesn't exceed the vehicle's capacity.");
+        }
     }
 }
