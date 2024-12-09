@@ -5,21 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataLoader {
-    /**
-     * Φορτώνει δεδομένα πελατών από ένα αρχείο CSV.
-     * @param filePath το μονοπάτι του αρχείου CSV
-     * @param delimiter το διαχωριστικό πεδίων (π.χ., ",")
-     * @return λίστα αντικειμένων Client
-     */
     public static List<Client> loadClientsFromFile(String filePath, String delimiter) {
         List<Client> clients = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            br.readLine(); // Παράβλεψη επικεφαλίδας
+            br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(delimiter);
-                if (values.length != 4) { // Έλεγχος σωστής μορφής
+                if (values.length != 4) {
                     System.err.println("Invalid line format: " + line);
                     continue;
                 }
@@ -40,14 +34,6 @@ public class DataLoader {
         return clients;
     }
 
-    /**
-     * Φορτώνει πίνακα αποστάσεων από ένα αρχείο CSV.
-     * @param filePath το μονοπάτι του αρχείου CSV
-     * @param size το μέγεθος του πίνακα
-     * @param delimiter το διαχωριστικό πεδίων
-     * @return αντικείμενο DistanceMatrix
-     */
-
     public static DistanceMatrix loadDistanceMatrixFromFile(String filePath, int size, String delimiter) {
         DistanceMatrix matrix = new DistanceMatrix(size);
 
@@ -57,7 +43,7 @@ public class DataLoader {
             br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(delimiter);
-                if (values.length != 3) { // Έλεγχος αν η γραμμή έχει σωστό αριθμό στηλών
+                if (values.length != 3) {
                     System.err.println("Invalid row format in line:" + line);
                     continue;
                 }
@@ -66,7 +52,6 @@ public class DataLoader {
                     int client_id_2 = Integer.parseInt(values[1].trim());
                     double distance = Double.parseDouble(values[2].trim());
 
-                    //Προσθήκη απόστασης των 2 πελατών συμμετρικά
                     matrix.addDistance(client_id_1, client_id_2, distance);
                     matrix.addDistance(client_id_2, client_id_1, distance);
                 } catch (NumberFormatException e) {

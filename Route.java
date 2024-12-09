@@ -5,12 +5,10 @@ public class Route {
     private Vehicle vehicle;
     private List<Client> clients;
 
-
     public Route(Vehicle vehicle) {
         this.vehicle = vehicle;
         this.clients = new ArrayList<>();
     }
-
 
     public void addClient(Client client) {
         if (client != null) {
@@ -20,16 +18,13 @@ public class Route {
         }
     }
 
-
     public List<Client> getClients() {
         return new ArrayList<>(clients);
     }
 
-
     public Vehicle getVehicle() {
         return vehicle;
     }
-
 
     public double calculateTotalRoute(DistanceMatrix distanceMatrix) {
         if (clients.isEmpty()) {
@@ -51,16 +46,13 @@ public class Route {
         return totalRoute;
     }
 
-
     public double calculateTotalDemand() {
         return clients.stream().mapToDouble(Client::getDemand).sum();
     }
 
-
     public boolean exceedsCapacity() {
         return calculateTotalDemand() > vehicle.getCapacity();
     }
-
 
     public void display(DistanceMatrix distanceMatrix) {
         System.out.println("Route for Vehicle " + vehicle.getId() + ": ");
