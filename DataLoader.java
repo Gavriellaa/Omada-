@@ -70,10 +70,10 @@ public class DataLoader {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            br.readLine(); // Παράβλεψη επικεφαλίδας
+            br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(delimiter);
-                if (values.length != 3) { // Έλεγχος σωστής μορφής
+                if (values.length != 3) {
                     System.err.println("Invalid line format: " + line);
                     continue;
                 }
