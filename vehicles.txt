@@ -1,0 +1,2 @@
+ID CAPACITY TYPE
+1,1800,Φορτηγό
