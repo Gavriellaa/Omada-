@@ -62,7 +62,7 @@ public class Route {
         }
         System.out.println("Depot");
         System.out.println("Total route: " + calculateTotalRoute(distanceMatrix));
-        System.out.println("Total demand: " + calculateTotalDemand());
+        System.out.println("Total demand: " + calculateTotalDemand() + " units");
         if (exceedsCapacity()) {
             System.out.println("The demand exceeds the vehicles' capacity.");
         } else {

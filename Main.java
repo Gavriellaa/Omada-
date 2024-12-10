@@ -16,9 +16,15 @@ public class Main {
         distanceMatrix.display();
         System.out.println();
 
-        List<Vehicle> vehicles = List.of(new Vehicle(1, 1800, "Φορτηγό", 400));
+        List<Vehicle> vehiclesfromFile = DataLoader.loadVehiclesFromFile("vehicles.txt", ",");
+        System.out.println("Vehicles available:");
+        System.out.println();
+        for (Vehicle vehicle : vehiclesfromFile) {
+            vehicle.display();
+            System.out.println();
+        }
 
-        List<Route> routes = VRPOptimizer.optimizeRoutes(clientsFromFile, vehicles, distanceMatrix);
+        List<Route> routes = VRPOptimizer.optimizeRoutes(clientsFromFile, vehiclesfromFile, distanceMatrix);
 
         System.out.println("Optimized routes:");
         System.out.println();

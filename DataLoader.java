@@ -64,4 +64,32 @@ public class DataLoader {
         }
         return matrix;
     }
+
+    public static List<Vehicle> loadVehiclesFromFile(String filePath, String delimiter) {
+        List<Vehicle> vehicles = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            br.readLine(); // Παράβλεψη επικεφαλίδας
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(delimiter);
+                if (values.length != 3) { // Έλεγχος σωστής μορφής
+                    System.err.println("Invalid line format: " + line);
+                    continue;
+                }
+                try {
+                    int id = Integer.parseInt(values[0]);
+                    double capacity = Double.parseDouble(values[1]);
+                    String vehicleType = (values[2]);
+                    vehicles.add(new Vehicle(id, capacity, vehicleType));
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid number format in line: " + line);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + filePath);
+            e.printStackTrace();
+        }
+        return vehicles;
+    }
 }
