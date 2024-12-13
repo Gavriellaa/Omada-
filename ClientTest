@@ -1,0 +1,55 @@
+package com.project;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ClientTest {
+
+    @Test
+    public void testValidParameters() {
+        Client client = new Client(1, 10.0, 20.0, 15.0);
+        assertEquals(1, client.getId());
+        assertEquals(10.0, client.getX());
+        assertEquals(20.0, client.getY());
+        assertEquals(15.0, client.getDemand());
+    }
+
+    @Test
+    public void testConstructorInvalidId() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Client(-1, 10.0, 20.0, 15.0));
+        assertEquals("ID must be greater than 0.", exception.getMessage());
+    }
+
+    @Test
+    public void testConstructorInvalidDemand() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Client(1, 10.0, 20.0, -15.0));
+        assertEquals("Demand cannot be negative.", exception.getMessage());
+    }
+
+
+    @Test
+    public void testSetDemandInvalid() {
+        Client client = new Client(1, 10.0, 20.0, 15.0);
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> client.setDemand(-10.0));
+        assertEquals("Demand cannot be negative.", exception.getMessage());
+    }
+
+    @Test
+    public void testCalculateDistanceToAnotherClient() {
+        Client client1 = new Client(1, 0.0, 0.0, 10.0);
+        Client client2 = new Client(2, 3.0, 4.0, 20.0);
+        assertEquals(5.0, client1.calculateDistance(client2));
+    }
+
+    @Test
+    public void testCalculateDistanceToNullClient() {
+        Client client = new Client(1, 0.0, 0.0, 10.0);
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> client.calculateDistance(null));
+        assertEquals("Other client cannot be null.", exception.getMessage());
+    }
+
+    @Test
+    public void testCalculateDistanceToCoordinates() {
+        Client client = new Client(1, 0.0, 0.0, 10.0);
+        assertEquals(5.0, client.calculateDistance(3.0, 4.0));
+    }
+}
